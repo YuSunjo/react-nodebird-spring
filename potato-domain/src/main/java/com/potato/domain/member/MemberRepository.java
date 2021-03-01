@@ -1,4 +1,4 @@
-package com.potato.domain.member.repository;
+package com.potato.domain.member;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
