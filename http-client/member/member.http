@@ -1,0 +1,18 @@
+### 회원가입 API
+POST {{host}}/api/v1/member
+Content-Type: application/json
+
+{
+    "email": "tnswh2023@naver.com",
+    "name": "유순조",
+    "profileUrl": "http://profile.com",
+}
+> {%
+client.global.set("AUTHORIZATION", response.body["data"])
+ %}
+
+
+### 내 정보를 가져오는 API
+GET {{host}}/api/v1/member
+Content-Type: application/json
+Authorization: Bearer {{AUTHORIZATION}}

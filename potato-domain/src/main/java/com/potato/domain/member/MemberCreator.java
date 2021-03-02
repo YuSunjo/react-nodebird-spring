@@ -14,4 +14,13 @@ public final class MemberCreator {
             .build();
     }
 
+    public static Member create(String email, String name, String profileUrl) {
+        return Member.builder()
+            .email(email)
+            .name(name)
+            .profileUrl(profileUrl)
+            .provider(MemberProvider.GOOGLE)
+            .build();
+    }
+
 }
