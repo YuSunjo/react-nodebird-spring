@@ -33,4 +33,12 @@ public class Member extends BaseTimeEntity {
         this.provider = provider;
     }
 
+    public static Member newGoogleInstance(String email, String name, String profileUrl) {
+        return Member.builder()
+            .email(email)
+            .name(name)
+            .profileUrl(profileUrl)
+            .provider(MemberProvider.GOOGLE)
+            .build();
+    }
 }

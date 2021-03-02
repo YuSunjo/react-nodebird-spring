@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockHttpSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,7 +31,7 @@ public class GoogleAuthServiceTest {
 
     @BeforeEach
     void setUpGoogleAuthService() {
-        googleAuthService = new GoogleAuthService(new MockGoogleApiCaller(), memberRepository);
+        googleAuthService = new GoogleAuthService(new MockHttpSession(), new MockGoogleApiCaller(), memberRepository);
     }
 
     @Test
