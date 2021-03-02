@@ -10,4 +10,12 @@ public class MemberServiceUtils {
             throw new IllegalArgumentException(String.format("이미 존재하는 회원 (%s) 입니다.", email));
         }
     }
+
+    public static Member findMemberById(MemberRepository memberRepository, Long memberId) {
+        Member member = memberRepository.findMemberById(memberId);
+        if (member == null) {
+            throw new IllegalArgumentException(String.format("해당 회원 (%s)는 존재하지 않습니다.", memberId));
+        }
+        return member;
+    }
 }
