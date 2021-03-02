@@ -1,4 +1,4 @@
-package com.potato.config;
+package com.potato.config.security;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,7 +12,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) {
         assert web != null;
         web.ignoring()
-            .antMatchers("/h2-console/**");
+            .antMatchers("/h2-console/**")
+            .antMatchers("/swagger-ui.html");
     }
 
     @Override
