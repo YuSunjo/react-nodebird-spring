@@ -1,8 +1,11 @@
 package com.potato.service.member.response;
 
+import com.potato.domain.board.Board;
 import com.potato.domain.member.Member;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
