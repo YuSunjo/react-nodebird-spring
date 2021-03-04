@@ -1,13 +1,12 @@
 package com.potato.domain.follow;
 
 import com.potato.domain.BaseTimeEntity;
+import com.potato.domain.member.Member;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -17,8 +16,12 @@ public class Follow extends BaseTimeEntity {
     @Id @GeneratedValue
     private Long id;
 
-    private Long followingId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "following_id")
+    private Member following;
 
-    private Long followerId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "follower_id")
+    private Member follower;
 
 }

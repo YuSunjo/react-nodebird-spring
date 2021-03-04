@@ -7,6 +7,7 @@ import com.potato.domain.member.Member;
 import com.potato.service.member.MemberService;
 import com.potato.service.member.request.CreateMemberRequest;
 import com.potato.service.member.response.MemberInfoResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +34,7 @@ public class MemberController {
         return ApiResponse.of(httpSession.getId());
     }
 
+    @Operation(summary = "내 정보를 불러오는 API", description = "Bearer 토큰이 필요합니다.")
     @GetMapping("/api/v1/member")
     public ApiResponse<MemberInfoResponse> getMyMemberInfo(@LoginMember MemberSession memberSession) {
         return ApiResponse.of(memberService.getMemberInfo(memberSession.getMemberId()));
