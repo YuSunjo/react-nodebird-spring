@@ -12,11 +12,11 @@ public class MemberInfoResponse {
 
     private final String email;
 
-    private final String name;
+    private final String nickname;
 
     private final String profileUrl;
 
     public static MemberInfoResponse of(Member member) {
-        return new MemberInfoResponse(member.getId(), member.getEmail(), member.getName(), member.getProfileUrl());
+        return new MemberInfoResponse(member.getId(), member.getEmail(), member.getNickname(), member.getProfileUrl());
     }
 }

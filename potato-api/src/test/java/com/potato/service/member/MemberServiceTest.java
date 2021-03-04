@@ -33,12 +33,12 @@ public class MemberServiceTest {
     void 회원가입을_진행한다() {
         //given
         String email = "tnswh2023@naver.com";
-        String name = "유순조";
+        String nickname = "유순조";
         String profileUrl = "http://profile.com";
 
         CreateMemberRequest request = CreateMemberRequest.testBuilder()
             .email(email)
-            .name(name)
+            .nickname(nickname)
             .profileUrl(profileUrl)
             .build();
 
@@ -49,18 +49,18 @@ public class MemberServiceTest {
         // then
         List<Member> memberList = memberRepository.findAll();
         assertThat(memberList).hasSize(1);
-        assertMemberInfo(memberList.get(0), email, name, profileUrl);
+        assertMemberInfo(memberList.get(0), email, nickname, profileUrl);
     }
 
     @Test
     void 이미_회원가입한_회원일_경우_에러가_발생한다() {
         // given
-        String email = "will.seungho@gmail.com";
+        String email = "tnswh2023@naver.com";
         memberRepository.save(MemberCreator.create(email));
 
         CreateMemberRequest request = CreateMemberRequest.testBuilder()
             .email(email)
-            .name("강승호")
+            .nickname("유순조")
             .build();
 
         // when & then
@@ -69,9 +69,9 @@ public class MemberServiceTest {
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
-    private void assertMemberInfo(Member member, String email, String name, String profileUrl) {
+    private void assertMemberInfo(Member member, String email, String nickname, String profileUrl) {
         assertThat(member.getEmail()).isEqualTo(email);
-        assertThat(member.getName()).isEqualTo(name);
+        assertThat(member.getNickname()).isEqualTo(nickname);
         assertThat(member.getProfileUrl()).isEqualTo(profileUrl);
     }
 
@@ -79,16 +79,16 @@ public class MemberServiceTest {
     void 회원_정보를_불러온다() {
         // given
         String email = "tnswh2023@naver.com";
-        String name = "유순조";
+        String nickname = "유순조";
         String profileUrl = "http://profile.com";
 
-        Member member = memberRepository.save(MemberCreator.create(email, name, profileUrl));
+        Member member = memberRepository.save(MemberCreator.create(email, nickname, profileUrl));
 
         // when
         MemberInfoResponse response = memberService.getMemberInfo(member.getId());
 
         // then
-        assertThatMemberInfoResponse(response, email, name, profileUrl);
+        assertThatMemberInfoResponse(response, email, nickname, profileUrl);
     }
 
     @Test
@@ -99,9 +99,9 @@ public class MemberServiceTest {
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
-    private void assertThatMemberInfoResponse(MemberInfoResponse response, String email, String name, String profileUrl) {
+    private void assertThatMemberInfoResponse(MemberInfoResponse response, String email, String nickname, String profileUrl) {
         assertThat(response.getEmail()).isEqualTo(email);
-        assertThat(response.getName()).isEqualTo(name);
+        assertThat(response.getNickname()).isEqualTo(nickname);
         assertThat(response.getProfileUrl()).isEqualTo(profileUrl);
     }
 

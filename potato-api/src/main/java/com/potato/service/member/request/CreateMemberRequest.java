@@ -15,19 +15,19 @@ public class CreateMemberRequest {
     private String email;
 
     @NotBlank
-    private String name;
+    private String nickname;
 
     private String profileUrl;
 
     @Builder(builderMethodName = "testBuilder")
-    public CreateMemberRequest(@NotBlank String email, @NotBlank String name, String profileUrl) {
+    public CreateMemberRequest(@NotBlank String email, @NotBlank String nickname, String profileUrl) {
         this.email = email;
-        this.name = name;
+        this.nickname = nickname;
         this.profileUrl = profileUrl;
     }
 
     public Member toEntity() {
-        return Member.newGoogleInstance(this.email, this.name, this.profileUrl);
+        return Member.newGoogleInstance(this.email, this.nickname, this.profileUrl);
     }
 
 }

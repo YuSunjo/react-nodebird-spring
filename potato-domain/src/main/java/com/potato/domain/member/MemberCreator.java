@@ -9,15 +9,15 @@ public final class MemberCreator {
     public static Member create(String email) {
         return Member.builder()
             .email(email)
-            .name("멤버")
+            .nickname("멤버")
             .provider(MemberProvider.GOOGLE)
             .build();
     }
 
-    public static Member create(String email, String name, String profileUrl) {
+    public static Member create(String email, String nickname, String profileUrl) {
         return Member.builder()
             .email(email)
-            .name(name)
+            .nickname(nickname)
             .profileUrl(profileUrl)
             .provider(MemberProvider.GOOGLE)
             .build();
