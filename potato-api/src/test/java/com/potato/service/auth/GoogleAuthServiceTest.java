@@ -47,15 +47,15 @@ public class GoogleAuthServiceTest {
 
         // then
         assertThat(response.getType()).isEqualTo(AuthResponse.AuthType.SIGN_UP);
-        assertThat(response.getEmail()).isEqualTo("will.seungho@gmail.com");
-        assertThat(response.getName()).isEqualTo("강승호");
+        assertThat(response.getEmail()).isEqualTo("tnswh2023@naver.com");
+        assertThat(response.getNickname()).isEqualTo("유순조");
         assertThat(response.getToken()).isNull();
     }
 
     @Test
     void 구_인증시_이미_존재하는_이메일의경우_로그인이_진행된다() {
         // given
-        memberRepository.save(MemberCreator.create("will.seungho@gmail.com"));
+        memberRepository.save(MemberCreator.create("tnswh2023@naver.com"));
 
         AuthRequest request = AuthRequest.testBuilder()
             .code("code")
@@ -68,7 +68,7 @@ public class GoogleAuthServiceTest {
         // then
         assertThat(response.getType()).isEqualTo(AuthResponse.AuthType.LOGIN);
         assertThat(response.getEmail()).isNull();
-        assertThat(response.getName()).isNull();
+        assertThat(response.getNickname()).isNull();
     }
 
     private static class MockGoogleApiCaller implements GoogleApiCaller {
@@ -83,8 +83,8 @@ public class GoogleAuthServiceTest {
         @Override
         public GoogleUserInfoResponse getGoogleUserProfileInfo(String accessToken) {
             return GoogleUserInfoResponse.testBuilder()
-                .email("will.seungho@gmail.com")
-                .name("강승호")
+                .email("tnswh2023@naver.com")
+                .name("유순조")
                 .build();
         }
 

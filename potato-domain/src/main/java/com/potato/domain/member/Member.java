@@ -18,7 +18,7 @@ public class Member extends BaseTimeEntity {
 
     private String email;
 
-    private String name;
+    private String nickname;
 
     private String profileUrl;
 
@@ -26,17 +26,17 @@ public class Member extends BaseTimeEntity {
     private MemberProvider provider;
 
     @Builder
-    public Member(String email, String name, String profileUrl, MemberProvider provider) {
+    public Member(String email, String nickname, String profileUrl, MemberProvider provider) {
         this.email = email;
-        this.name = name;
+        this.nickname = nickname;
         this.profileUrl = profileUrl;
         this.provider = provider;
     }
 
-    public static Member newGoogleInstance(String email, String name, String profileUrl) {
+    public static Member newGoogleInstance(String email, String nickname, String profileUrl) {
         return Member.builder()
             .email(email)
-            .name(name)
+            .nickname(nickname)
             .profileUrl(profileUrl)
             .provider(MemberProvider.GOOGLE)
             .build();

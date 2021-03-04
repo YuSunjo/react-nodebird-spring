@@ -11,12 +11,12 @@ public class AuthResponse {
 
     private final String email;
 
-    private final String name;
+    private final String nickname;
 
     private final String token;
 
-    public static AuthResponse signUp(String email, String name) {
-        return new AuthResponse(AuthType.SIGN_UP, email, name, null);
+    public static AuthResponse signUp(String email, String nickname) {
+        return new AuthResponse(AuthType.SIGN_UP, email, nickname, null);
     }
 
     public static AuthResponse login(String token) {
