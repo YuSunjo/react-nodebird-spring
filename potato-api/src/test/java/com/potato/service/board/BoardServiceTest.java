@@ -6,6 +6,7 @@ import com.potato.domain.board.repository.BoardRepository;
 import com.potato.domain.member.MemberRepository;
 import com.potato.service.MemberSetupTest;
 import com.potato.service.board.dto.request.CreateBoardRequest;
+import com.potato.service.board.dto.request.UpdateBoardRequest;
 import com.potato.service.board.dto.response.BoardInfoResponse;
 import com.potato.service.member.MemberService;
 import org.assertj.core.api.Assertions;
@@ -63,7 +64,24 @@ public class BoardServiceTest extends MemberSetupTest {
 
         //then
         assertThat(response.getContent()).isEqualTo(content);
+    }
 
+    @Test
+    public void 게시글을_수정한다() {
+        //given
+        String content = "updateContent";
+        UpdateBoardRequest request = UpdateBoardRequest.testInstance(content);
+
+        Board board = BoardCreator.create("content", memberId);
+        boardRepository.save(board);
+
+        //when
+        System.out.println("board.getId() = " + board.getId());
+        System.out.println(board.getContent());
+        BoardInfoResponse response = boardService.updateBoard(request, board.getId());
+
+        //then
+        assertThat(response.getContent()).isEqualTo(content);
     }
 
 }
