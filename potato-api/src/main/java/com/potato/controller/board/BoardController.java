@@ -5,6 +5,7 @@ import com.potato.config.session.MemberSession;
 import com.potato.controller.ApiResponse;
 import com.potato.service.board.BoardService;
 import com.potato.service.board.dto.request.CreateBoardRequest;
+import com.potato.service.board.dto.request.UpdateBoardRequest;
 import com.potato.service.board.dto.response.BoardInfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,12 @@ public class BoardController {
     @GetMapping("/board/{boardId}")
     public ApiResponse<BoardInfoResponse> getBoard(@PathVariable Long boardId) {
         return ApiResponse.of(boardService.getBoard(boardId));
+    }
+
+    @Operation(summary = "게시글을 수정합니다.", description = "Bearer 토큰이 필요합니다.")
+    @PutMapping("/board/{boardId}")
+    public ApiResponse<BoardInfoResponse> updateBoard(@Valid @RequestBody UpdateBoardRequest request, @PathVariable Long boardId) {
+        return ApiResponse.of(boardService.updateBoard(request, boardId));
     }
 
 }

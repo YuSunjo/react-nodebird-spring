@@ -3,7 +3,10 @@ package com.potato.service.board;
 import com.potato.domain.board.Board;
 import com.potato.domain.board.repository.BoardRepository;
 import com.potato.exception.NotFoundException;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BoardServiceUtils {
 
     public static Board findBoardById(BoardRepository boardRepository, Long boardId) {
@@ -13,4 +16,5 @@ public class BoardServiceUtils {
         }
         return board;
     }
+
 }

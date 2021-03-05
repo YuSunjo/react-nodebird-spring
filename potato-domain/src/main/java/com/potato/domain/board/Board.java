@@ -18,13 +18,13 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Board extends BaseTimeEntity {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @Column(nullable = false)
     private String content;
 
-    @NotNull
+    @Column(nullable = false)
     private Long memberId;
 
     private Long retweetId;
@@ -46,4 +46,7 @@ public class Board extends BaseTimeEntity {
             .build();
     }
 
+    public void update(String content) {
+        this.content = content;
+    }
 }

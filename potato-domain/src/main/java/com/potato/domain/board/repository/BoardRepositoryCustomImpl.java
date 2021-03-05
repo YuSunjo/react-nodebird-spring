@@ -10,6 +10,7 @@ import static com.potato.domain.board.QBoard.board;
 public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
+
     @Override
     public Board findBoardById(Long boardId) {
         return queryFactory.selectFrom(board)
@@ -18,4 +19,5 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
             )
             .fetchOne();
     }
+
 }
