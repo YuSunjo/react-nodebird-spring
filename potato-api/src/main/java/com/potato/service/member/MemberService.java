@@ -4,6 +4,7 @@ import com.potato.domain.board.Board;
 import com.potato.domain.member.Member;
 import com.potato.domain.member.MemberRepository;
 import com.potato.service.member.request.CreateMemberRequest;
+import com.potato.service.member.request.UpdateMemberRequest;
 import com.potato.service.member.response.MemberInfoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,4 +29,11 @@ public class MemberService {
         return MemberInfoResponse.of(member);
     }
 
+    @Transactional
+    public MemberInfoResponse updateMemberInfo(UpdateMemberRequest request, Long memberId) {
+        Member member = MemberServiceUtils.findMemberById(memberRepository, memberId);
+        member.update(request.getNickname());
+
+        return MemberInfoResponse.of(member);
+    }
 }

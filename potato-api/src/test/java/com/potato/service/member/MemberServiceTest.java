@@ -3,7 +3,9 @@ package com.potato.service.member;
 import com.potato.domain.member.Member;
 import com.potato.domain.member.MemberCreator;
 import com.potato.domain.member.MemberRepository;
+import com.potato.exception.NotFoundException;
 import com.potato.service.member.request.CreateMemberRequest;
+import com.potato.service.member.request.UpdateMemberRequest;
 import com.potato.service.member.response.MemberInfoResponse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -105,5 +107,34 @@ public class MemberServiceTest {
         assertThat(response.getProfileUrl()).isEqualTo(profileUrl);
     }
 
+    @Test
+    void 닉네임_변경하기() {
+        //given
+        Member member = MemberCreator.create("tnswh2023@naver.com");
+        memberRepository.save(member);
+
+        String nickname= "updateNickname";
+
+        UpdateMemberRequest request = UpdateMemberRequest.testInstance(nickname);
+
+        //when
+        memberService.updateMemberInfo(request, member.getId());
+
+        //then
+        assertMemberInfo(member, member.getEmail(), member.getNickname(), member.getProfileUrl());
+    }
+
+    @Test
+    void 존재하지_않는_멤버의_닉네임을_변경하려고한다() {
+        //given
+        String nickname= "updateNickname";
+
+        UpdateMemberRequest request = UpdateMemberRequest.testInstance(nickname);
+
+        //when & then
+        assertThatThrownBy(
+            () -> memberService.updateMemberInfo(request, 11L)
+        ).isInstanceOf(IllegalArgumentException.class);
+    }
 
 }

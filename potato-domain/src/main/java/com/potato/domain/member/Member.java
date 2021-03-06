@@ -50,4 +50,8 @@ public class Member extends BaseTimeEntity {
             .provider(MemberProvider.GOOGLE)
             .build();
     }
+
+    public void update(String nickname) {
+        this.nickname = nickname;
+    }
 }
