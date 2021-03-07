@@ -45,4 +45,11 @@ public class MemberController {
         return ApiResponse.of(memberService.updateMemberInfo(request, memberSession.getMemberId()));
     }
 
+    @Operation(summary = "팔로우 유저", description = "Bearer")
+    @PostMapping("/follow/{targetId}")
+    public ApiResponse<String> followMember(@PathVariable Long targetId, @LoginMember MemberSession memberSession) {
+        memberService.followMember(targetId, memberSession.getMemberId());
+        return ApiResponse.OK;
+    }
+
 }

@@ -36,4 +36,11 @@ public class MemberService {
 
         return MemberInfoResponse.of(member);
     }
+
+    @Transactional
+    public void followMember(Long targetId, Long memberId) {
+        Member following = MemberServiceUtils.findMemberById(memberRepository, memberId);
+        Member follower = MemberServiceUtils.findMemberById(memberRepository, targetId);
+        following.addFollower(follower);
+    }
 }
