@@ -1,5 +1,7 @@
 package com.potato.service.member;
 
+import com.potato.domain.follow.Follow;
+import com.potato.domain.follow.FollowRepository;
 import com.potato.domain.member.Member;
 import com.potato.domain.member.MemberCreator;
 import com.potato.domain.member.MemberRepository;
@@ -26,9 +28,13 @@ public class MemberServiceTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
+    private FollowRepository followRepository;
+
     @AfterEach
     void cleanUp() {
         memberRepository.deleteAll();
+        followRepository.deleteAll();
     }
 
     @Test
@@ -135,6 +141,27 @@ public class MemberServiceTest {
         assertThatThrownBy(
             () -> memberService.updateMemberInfo(request, 11L)
         ).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    public void 내가_누군가를_팔로잉하면_정상처리된다() {
+        //given
+        Member following = MemberCreator.create("tnswh2023@naver.com");
+        memberRepository.save(following);
+
+        Member follower = MemberCreator.create("tnswh2020@naver.com");
+        memberRepository.save(follower);
+
+        //when
+        memberService.followMember(follower.getId(), following.getId());
+
+        //then
+        List<Member> memberList = memberRepository.findAll();
+        assertThat(memberList.get(0).getFollowerCount()).isEqualTo(1);
+
+        List<Follow> followList = followRepository.findAll();
+        assertThat(followList).hasSize(1);
+        assertThat(followList.get(0).getFollower().getId()).isEqualTo(follower.getId());
     }
 
 }
