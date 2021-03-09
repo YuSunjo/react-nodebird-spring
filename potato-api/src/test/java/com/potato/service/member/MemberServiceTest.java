@@ -5,6 +5,7 @@ import com.potato.domain.follow.FollowRepository;
 import com.potato.domain.member.Member;
 import com.potato.domain.member.MemberCreator;
 import com.potato.domain.member.MemberRepository;
+import com.potato.exception.ConflictException;
 import com.potato.exception.NotFoundException;
 import com.potato.service.member.request.CreateMemberRequest;
 import com.potato.service.member.request.UpdateMemberRequest;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -74,7 +76,7 @@ public class MemberServiceTest {
         // when & then
         assertThatThrownBy(() -> {
             memberService.createMember(request);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(ConflictException.class);
     }
 
     private void assertMemberInfo(Member member, String email, String nickname, String profileUrl) {
@@ -104,7 +106,7 @@ public class MemberServiceTest {
         // when & then
         assertThatThrownBy(() -> {
             memberService.getMemberInfo(999L);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(NotFoundException.class);
     }
 
     private void assertThatMemberInfoResponse(MemberInfoResponse response, String email, String nickname, String profileUrl) {
@@ -140,7 +142,7 @@ public class MemberServiceTest {
         //when & then
         assertThatThrownBy(
             () -> memberService.updateMemberInfo(request, 11L)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -157,11 +159,47 @@ public class MemberServiceTest {
 
         //then
         List<Member> memberList = memberRepository.findAll();
-        assertThat(memberList.get(0).getFollowerCount()).isEqualTo(1);
+        assertThat(memberList.get(1).getFollowerCount()).isEqualTo(1);
 
         List<Follow> followList = followRepository.findAll();
         assertThat(followList).hasSize(1);
         assertThat(followList.get(0).getFollower().getId()).isEqualTo(follower.getId());
+    }
+
+    @Test
+    void 팔로우하려는_멤버가_없을_경우() {
+        //given
+        Member following = MemberCreator.create("tnswh2023@naver.com");
+        memberRepository.save(following);
+
+        Long follower = 99L;
+
+        //when & then
+        assertThatThrownBy(
+            () -> memberService.followMember(follower, following.getId())
+        ).isInstanceOf(NotFoundException.class);
+    }
+
+    @Test
+    public void 팔로워한_멤버들을_가져온다() {
+        //given
+        Member member1 = MemberCreator.create("tnswh1@naver.com");
+        memberRepository.save(member1);
+
+        Member member2 = MemberCreator.create("tnswh2@naver.com");
+        Member member3 = MemberCreator.create("tnswh3@naver.com");
+
+        member2.addFollowing(member1.getId());
+        member3.addFollowing(member1.getId());
+        memberRepository.saveAll(Arrays.asList(member2, member3));
+
+        //when
+        List<MemberInfoResponse> responses = memberService.getFollowerMember(member1.getId());
+        System.out.println("responses = " + responses);
+
+        //then
+        assertThat(responses.get(0).getEmail()).isEqualTo("tnswh2@naver.com");
+        assertThat(responses.get(1).getEmail()).isEqualTo("tnswh3@naver.com");
     }
 
 }

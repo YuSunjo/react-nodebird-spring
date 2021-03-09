@@ -3,18 +3,18 @@ package com.potato.controller.member;
 import com.potato.config.argumentResolver.LoginMember;
 import com.potato.config.session.MemberSession;
 import com.potato.controller.ApiResponse;
-import com.potato.domain.member.Member;
 import com.potato.service.member.MemberService;
 import com.potato.service.member.request.CreateMemberRequest;
 import com.potato.service.member.request.UpdateMemberRequest;
 import com.potato.service.member.response.MemberInfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+
+import java.util.List;
 
 import static com.potato.config.session.SessionConstants.AUTH_SESSION;
 
@@ -45,11 +45,17 @@ public class MemberController {
         return ApiResponse.of(memberService.updateMemberInfo(request, memberSession.getMemberId()));
     }
 
-    @Operation(summary = "팔로우 유저", description = "Bearer")
+    @Operation(summary = "팔로우 유저", description = "Bearer 토큰이 필요합니다.")
     @PostMapping("/follow/{targetId}")
     public ApiResponse<String> followMember(@PathVariable Long targetId, @LoginMember MemberSession memberSession) {
         memberService.followMember(targetId, memberSession.getMemberId());
         return ApiResponse.OK;
+    }
+
+    @Operation(summary = "팔로우한 유저를 가져옵니다.", description = "Bearer 토큰이 필요합니다.")
+    @GetMapping("/follower")
+    public ApiResponse<List<MemberInfoResponse>> getFollowerMember(@LoginMember MemberSession memberSession) {
+        return ApiResponse.of(memberService.getFollowerMember(memberSession.getMemberId()));
     }
 
 }

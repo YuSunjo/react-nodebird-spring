@@ -4,6 +4,9 @@ import com.potato.domain.member.Member;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
+import static com.potato.domain.follow.QFollow.follow;
 import static com.potato.domain.member.QMember.member;
 
 @RequiredArgsConstructor
@@ -25,4 +28,15 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 member.id.eq(memberId)
             ).fetchOne();
     }
+
+    @Override
+    public List<Member> findFollowerMemberById(Long memberId) {
+        System.out.println("여기좀");
+        return queryFactory.selectFrom(member)
+            .innerJoin(member.followerList, follow).fetchJoin()
+            .where(
+               follow.memberId.eq(memberId)
+            ).fetch();
+    }
+
 }
