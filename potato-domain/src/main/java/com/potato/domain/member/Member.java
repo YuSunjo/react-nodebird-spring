@@ -27,13 +27,8 @@ public class Member extends BaseTimeEntity {
 
     private int followerCount;
 
-    private int followingCount;
-
     @Enumerated(EnumType.STRING)
     private MemberProvider provider;
-
-    @OneToMany(mappedBy = "following", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Follow> followingList = new ArrayList<>();   // 특정 대상이 팔로우 하다.
 
     @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Follow> followerList = new ArrayList<>();  // 특정 대상을 팔로우 하다.
@@ -45,7 +40,6 @@ public class Member extends BaseTimeEntity {
         this.profileUrl = profileUrl;
         this.provider = provider;
         this.followerCount = 0;
-        this.followingCount = 0;
     }
 
     public static Member newGoogleInstance(String email, String nickname, String profileUrl) {
@@ -61,8 +55,8 @@ public class Member extends BaseTimeEntity {
         this.nickname = nickname;
     }
 
-    public void addFollower(Member follower) {
-        this.followerList.add(Follow.newFollow(this, follower));
+    public void addFollowing(Long memberId) {
+        this.followerList.add(Follow.newFollow(memberId, this));
         followerCount++;
     }
 
