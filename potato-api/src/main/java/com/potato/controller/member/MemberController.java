@@ -58,4 +58,10 @@ public class MemberController {
         return ApiResponse.of(memberService.getFollowerMember(memberSession.getMemberId()));
     }
 
+    @Operation(summary = "나를 팔로우한 유저를 가져옵니다.", description = "Bearer 토큰이 필요합니다.")
+    @GetMapping("/toMeFollower")
+    public ApiResponse<List<MemberInfoResponse>> getToMeFollowerMember(@LoginMember MemberSession memberSession) {
+        return ApiResponse.of(memberService.getToMeFollowerMember(memberSession.getMemberId()));
+    }
+
 }

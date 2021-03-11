@@ -31,11 +31,20 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 
     @Override
     public List<Member> findFollowerMemberById(Long memberId) {
-        System.out.println("여기좀");
         return queryFactory.selectFrom(member)
             .innerJoin(member.followerList, follow).fetchJoin()
             .where(
                follow.memberId.eq(memberId)
+            ).fetch();
+    }
+
+    @Override
+    public List<Member> findToMeFollowerMemberById(Long memberId) {
+        System.out.println("여기 ");
+        return queryFactory.selectFrom(member)
+            .innerJoin(member.followerList, follow).fetchJoin()
+            .where(
+                follow.follower.id.eq(memberId)
             ).fetch();
     }
 

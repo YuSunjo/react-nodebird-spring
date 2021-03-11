@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
@@ -57,7 +58,13 @@ public class Member extends BaseTimeEntity {
 
     public void addFollowing(Long memberId) {
         this.followerList.add(Follow.newFollow(memberId, this));
+        System.out.println("memberId = " + memberId);
         followerCount++;
     }
 
+    public List<Long> getFollowerId() {
+        return this.followerList.stream()
+            .map(Follow::getMemberId)
+            .collect(Collectors.toList());
+    }
 }

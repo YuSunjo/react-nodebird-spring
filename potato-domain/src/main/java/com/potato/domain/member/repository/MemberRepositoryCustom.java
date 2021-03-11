@@ -11,4 +11,7 @@ public interface MemberRepositoryCustom {
     Member findMemberById(Long memberId);
 
     List<Member> findFollowerMemberById(Long id);
+
+    List<Member> findToMeFollowerMemberById(Long id);
+
 }

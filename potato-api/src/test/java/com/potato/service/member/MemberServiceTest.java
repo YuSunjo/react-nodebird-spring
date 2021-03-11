@@ -181,7 +181,7 @@ public class MemberServiceTest {
     }
 
     @Test
-    public void 팔로워한_멤버들을_가져온다() {
+    public void 내가_팔로워한_멤버들을_가져온다() {
         //given
         Member member1 = MemberCreator.create("tnswh1@naver.com");
         memberRepository.save(member1);
@@ -200,6 +200,34 @@ public class MemberServiceTest {
         //then
         assertThat(responses.get(0).getEmail()).isEqualTo("tnswh2@naver.com");
         assertThat(responses.get(1).getEmail()).isEqualTo("tnswh3@naver.com");
+    }
+
+    @Test
+    void 나를_팔로우한_멤버들을_불러온다() {
+        //given
+        Member member1 = MemberCreator.create("tnswh1@naver.com");
+
+
+        Member member2 = MemberCreator.create("tnswh2@naver.com");
+        Member member3 = MemberCreator.create("tnswh3@naver.com");
+        memberRepository.saveAll(Arrays.asList(member2, member3));
+
+        member1.addFollowing(member2.getId());
+        member1.addFollowing(member3.getId());
+
+        memberRepository.save(member1);
+
+
+        //when
+        List<MemberInfoResponse> responses = memberService.getToMeFollowerMember(member1.getId());
+        for (MemberInfoResponse response : responses) {
+            System.out.println("response = " + response.getEmail());
+        }
+
+        //then
+        assertThat(responses.get(0).getEmail()).isEqualTo(member2.getEmail());
+        assertThat(responses.get(1).getEmail()).isEqualTo(member3.getEmail());
+
     }
 
 }

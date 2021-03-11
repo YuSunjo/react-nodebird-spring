@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -48,9 +50,19 @@ public class MemberService {
     @Transactional(readOnly = true)
     public List<MemberInfoResponse> getFollowerMember(Long memberId) {
         Member member = MemberServiceUtils.findMemberById(memberRepository, memberId);
-        System.out.println("여기는");
         List<Member> followerList = memberRepository.findFollowerMemberById(member.getId());
+//        List<Member> followerList = memberRepository.findAllById(member.getFollowerId());
         return followerList.stream()
+            .map(MemberInfoResponse::of)
+            .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<MemberInfoResponse> getToMeFollowerMember(Long memberId) {
+        Member member = MemberServiceUtils.findMemberById(memberRepository, memberId);
+//        List<Member> toMeFollowerList = memberRepository.findToMeFollowerMemberById(member.getId());
+        List<Member> toMeFollowerList = memberRepository.findAllById(member.getFollowerId());
+        return toMeFollowerList.stream()
             .map(MemberInfoResponse::of)
             .collect(Collectors.toList());
     }
