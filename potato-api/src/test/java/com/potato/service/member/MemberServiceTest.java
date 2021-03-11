@@ -246,8 +246,7 @@ public class MemberServiceTest {
         //then
         List<Follow> followList = followRepository.findAll();
         assertThat(followList).hasSize(1);
-
-
+        assertThat(followList.get(0).getFollower().getId()).isEqualTo(member3.getId());
     }
 
 }
