@@ -24,10 +24,13 @@ public class BoardComment extends BaseTimeEntity {
     @Column(nullable = false)
     private Long boardId;
 
+    private boolean isDeleted;
+
     private BoardComment(String content, Long memberId, Long boardId) {
         this.content = content;
         this.memberId = memberId;
         this.boardId = boardId;
+        this.isDeleted = false;
     }
 
     public static BoardComment newComment(String content, Long memberId, Long boardId) {
