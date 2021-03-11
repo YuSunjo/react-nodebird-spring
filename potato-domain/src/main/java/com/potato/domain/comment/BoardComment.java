@@ -37,4 +37,7 @@ public class BoardComment extends BaseTimeEntity {
         return new BoardComment(content, memberId, boardId);
     }
 
+    public void delete() {
+        this.isDeleted = true;
+    }
 }

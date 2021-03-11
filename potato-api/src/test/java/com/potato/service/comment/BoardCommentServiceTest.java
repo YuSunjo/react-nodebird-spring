@@ -86,4 +86,21 @@ public class BoardCommentServiceTest extends MemberSetupTest {
         assertThat(responses.get(1).getContent()).isEqualTo(content2);
     }
 
+    @Test
+    void 댓글을_삭제합니다() {
+        //given
+        String content1 = "content1";
+
+        BoardComment boardComment1 = BoardCommentCreator.create(content1, memberId, board.getId());
+        boardCommentRepository.save(boardComment1);
+        System.out.println("boardComment1.isDeleted() = " + boardComment1.isDeleted());
+
+        //when
+        boardCommentService.deleteBoardComment(boardComment1.getId(), memberId);
+
+        //then
+        List<BoardComment> boardCommentList = boardCommentRepository.findAll();
+        assertThat(boardCommentList.get(0).isDeleted()).isEqualTo(true);
+    }
+
 }

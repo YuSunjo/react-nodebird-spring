@@ -32,5 +32,11 @@ public class BoardCommentController {
         return ApiResponse.of(boardCommentService.getComment(boardId, memberSession.getMemberId()));
     }
 
+    @Operation(summary = "게시물 댓글 삭제하기", description = "Bearer 토큰이 필요합니다.")
+    @DeleteMapping("/board/comment")
+    public ApiResponse<String> deleteBoardComment(@RequestParam Long boardCommentId, @LoginMember MemberSession memberSession) {
+        boardCommentService.deleteBoardComment(boardCommentId, memberSession.getMemberId());
+        return ApiResponse.OK;
+    }
 
 }
