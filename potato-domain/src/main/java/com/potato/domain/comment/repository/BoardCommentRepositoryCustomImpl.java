@@ -21,4 +21,13 @@ public class BoardCommentRepositoryCustomImpl implements BoardCommentRepositoryC
                 boardComment.boardId.eq(boardId)
             ).fetch();
     }
+
+    @Override
+    public BoardComment findBoardCommentByIdAndMemberId(Long boardCommentId, Long memberId) {
+        return queryFactory.selectFrom(boardComment)
+            .where(
+                boardComment.id.eq(boardCommentId),
+                boardComment.memberId.eq(memberId)
+            ).fetchOne();
+    }
 }
