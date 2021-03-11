@@ -148,14 +148,14 @@ public class MemberServiceTest {
     @Test
     public void 내가_누군가를_팔로잉하면_정상처리된다() {
         //given
-        Member following = MemberCreator.create("tnswh2023@naver.com");
-        memberRepository.save(following);
+        Member member1 = MemberCreator.create("tnswh1@naver.com");
+        memberRepository.save(member1);
 
-        Member follower = MemberCreator.create("tnswh2020@naver.com");
-        memberRepository.save(follower);
+        Member member2 = MemberCreator.create("tnswh2@naver.com");
+        memberRepository.save(member2);
 
         //when
-        memberService.followMember(follower.getId(), following.getId());
+        memberService.followMember(member2.getId(), member1.getId());
 
         //then
         List<Member> memberList = memberRepository.findAll();
@@ -163,7 +163,7 @@ public class MemberServiceTest {
 
         List<Follow> followList = followRepository.findAll();
         assertThat(followList).hasSize(1);
-        assertThat(followList.get(0).getFollower().getId()).isEqualTo(follower.getId());
+        assertThat(followList.get(0).getFollower().getId()).isEqualTo(member2.getId());
     }
 
     @Test
@@ -207,7 +207,6 @@ public class MemberServiceTest {
         //given
         Member member1 = MemberCreator.create("tnswh1@naver.com");
 
-
         Member member2 = MemberCreator.create("tnswh2@naver.com");
         Member member3 = MemberCreator.create("tnswh3@naver.com");
         memberRepository.saveAll(Arrays.asList(member2, member3));
@@ -216,7 +215,6 @@ public class MemberServiceTest {
         member1.addFollowing(member3.getId());
 
         memberRepository.save(member1);
-
 
         //when
         List<MemberInfoResponse> responses = memberService.getToMeFollowerMember(member1.getId());
@@ -227,6 +225,28 @@ public class MemberServiceTest {
         //then
         assertThat(responses.get(0).getEmail()).isEqualTo(member2.getEmail());
         assertThat(responses.get(1).getEmail()).isEqualTo(member3.getEmail());
+    }
+
+    @Test
+    void 내가_팔로우한_멤버_취소하기() {
+        //given
+        Member member1 = MemberCreator.create("tnswh1@naver.com");
+        memberRepository.save(member1);
+
+        Member member2 = MemberCreator.create("tnswh2@naver.com");
+        Member member3 = MemberCreator.create("tnswh3@naver.com");
+
+        member2.addFollowing(member1.getId());
+        member3.addFollowing(member1.getId());
+        memberRepository.saveAll(Arrays.asList(member2, member3));
+
+        //when
+        memberService.unFollowMember(member2.getId(), member1.getId());
+
+        //then
+        List<Follow> followList = followRepository.findAll();
+        assertThat(followList).hasSize(1);
+
 
     }
 

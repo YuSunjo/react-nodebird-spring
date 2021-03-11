@@ -64,4 +64,11 @@ public class MemberController {
         return ApiResponse.of(memberService.getToMeFollowerMember(memberSession.getMemberId()));
     }
 
+    @Operation(summary = "내가 팔로우한 유저 취소하기", description = "Bearer 토큰이 필요합니다.")
+    @DeleteMapping("/api/v1/organization/follow/{targetId}")
+    public ApiResponse<String> unFollowMember(@PathVariable Long targetId, @LoginMember MemberSession memberSession) {
+        memberService.unFollowMember(targetId, memberSession.getMemberId());
+        return ApiResponse.OK;
+    }
+
 }

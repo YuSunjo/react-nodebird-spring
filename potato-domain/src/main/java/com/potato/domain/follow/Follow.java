@@ -32,4 +32,7 @@ public class Follow extends BaseTimeEntity {
         return new Follow(memberId, follower);
     }
 
+    public boolean isSameMember(Long memberId) {
+        return this.memberId.equals(memberId);
+    }
 }

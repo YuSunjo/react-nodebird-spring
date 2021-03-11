@@ -67,4 +67,10 @@ public class MemberService {
             .collect(Collectors.toList());
     }
 
+    @Transactional
+    public void unFollowMember(Long targetId, Long memberId) {
+        Member targetMember = MemberServiceUtils.findMemberById(memberRepository, targetId);
+        targetMember.unFollowing(targetMember, memberId);
+    }
+
 }

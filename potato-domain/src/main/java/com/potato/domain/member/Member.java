@@ -2,6 +2,7 @@ package com.potato.domain.member;
 
 import com.potato.domain.BaseTimeEntity;
 import com.potato.domain.follow.Follow;
+import com.potato.exception.NotFoundException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -67,4 +68,18 @@ public class Member extends BaseTimeEntity {
             .map(Follow::getMemberId)
             .collect(Collectors.toList());
     }
+
+    public void unFollowing(Member targetMember, Long memberId) {
+        Follow followerMember = this.findFollowerMember(memberId, targetMember);
+        followerList.remove(followerMember);
+        followerCount--;
+    }
+
+    private Follow findFollowerMember(Long memberId, Member targetMember) {
+        return this.followerList.stream()
+            .filter(mapper -> mapper.isSameMember(memberId))
+            .findFirst()
+            .orElseThrow(() -> new NotFoundException(String.format("해당하는 멤버(%s)에 팔로우한 멤버(%s)가 없습니다.", targetMember, memberId)));
+    }
+
 }
