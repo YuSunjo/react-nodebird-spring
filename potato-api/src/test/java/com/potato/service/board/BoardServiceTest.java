@@ -3,7 +3,11 @@ package com.potato.service.board;
 import com.potato.domain.board.Board;
 import com.potato.domain.board.BoardCreator;
 import com.potato.domain.board.repository.BoardRepository;
+import com.potato.domain.like.BoardLike;
+import com.potato.domain.like.BoardLikeRepository;
 import com.potato.domain.member.MemberRepository;
+import com.potato.exception.ConflictException;
+import com.potato.exception.NotFoundException;
 import com.potato.service.MemberSetupTest;
 import com.potato.service.board.dto.request.CreateBoardRequest;
 import com.potato.service.board.dto.request.UpdateBoardRequest;
@@ -18,6 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 public class BoardServiceTest extends MemberSetupTest {
@@ -27,6 +32,9 @@ public class BoardServiceTest extends MemberSetupTest {
 
     @Autowired
     private BoardRepository boardRepository;
+
+    @Autowired
+    private BoardLikeRepository boardLikeRepository;
 
     @AfterEach
     void cleanUp() {
@@ -82,6 +90,68 @@ public class BoardServiceTest extends MemberSetupTest {
 
         //then
         assertThat(response.getContent()).isEqualTo(content);
+    }
+
+    @Test
+    void 게시물을_좋아요한다() {
+        //given
+        Board board = BoardCreator.create("content입니다.", memberId);
+        boardRepository.save(board);
+
+        //when
+        boardService.addBoardLike(board.getId(), 100L);
+
+        //then
+        List<Board> boardList = boardRepository.findAll();
+        assertThat(boardList).hasSize(1);
+        assertThat(boardList.get(0).getLikesCount()).isEqualTo(1);
+
+        List<BoardLike> boardLikeList = boardLikeRepository.findAll();
+        assertThat(boardLikeList).hasSize(1);
+        assertThat(boardLikeList.get(0).getMemberId()).isEqualTo(100L);
+    }
+
+    @Test
+    void 이미_좋아요를_누른_상태일_경우_컨플릭트_애러뜬다() {
+        //given
+        Board board = BoardCreator.create("content입니다.", memberId);
+        board.addLike(100L);
+        boardRepository.save(board);
+        //when & then
+        assertThatThrownBy(
+            () -> boardService.addBoardLike(board.getId(), 100L)
+        ).isInstanceOf(ConflictException.class);
+    }
+
+    @Test
+    void 좋아요를_취소한다() {
+        //given
+        Board board = BoardCreator.create("content입니다.", memberId);
+        board.addLike(100L);
+        boardRepository.save(board);
+
+        //when
+        boardService.cancelBoardLike(board.getId(), 100L);
+
+        //then
+        List<Board> boardList = boardRepository.findAll();
+        assertThat(boardList).hasSize(1);
+        assertThat(boardList.get(0).getLikesCount()).isEqualTo(0);
+
+        List<BoardLike> boardLikeList = boardLikeRepository.findAll();
+        assertThat(boardLikeList).isEmpty();
+    }
+
+    @Test
+    void 게시물에_누르지_않은_좋아요를_취소하면_애러발생() {
+        //given
+        Board board = BoardCreator.create("content입니다.", memberId);
+        boardRepository.save(board);
+
+        //when & then
+        assertThatThrownBy(
+            () -> boardService.cancelBoardLike(board.getId(), memberId)
+        ).isInstanceOf(NotFoundException.class);
     }
 
 }

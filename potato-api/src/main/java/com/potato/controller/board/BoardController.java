@@ -36,4 +36,18 @@ public class BoardController {
         return ApiResponse.of(boardService.updateBoard(request, boardId));
     }
 
+    @Operation(summary = "게시글을 좋아요합니다.", description = "Bearer 토큰이 필요합니다.")
+    @PostMapping("/board/like/{boardId}")
+    public ApiResponse<String> addBoardLike(@PathVariable Long boardId, @LoginMember MemberSession memberSession) {
+        boardService.addBoardLike(boardId, memberSession.getMemberId());
+        return ApiResponse.OK;
+    }
+
+    @Operation(summary = "게시글 좋아요를 취소합니다.", description = "Bearer 토큰이 필요합니다.")
+    @DeleteMapping("/board/unlike/{boardId}")
+    public ApiResponse<String> cancelBoardLike(@PathVariable Long boardId, @LoginMember MemberSession memberSession) {
+        boardService.cancelBoardLike(boardId, memberSession.getMemberId());
+        return ApiResponse.OK;
+    }
+
 }

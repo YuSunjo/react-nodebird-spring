@@ -34,4 +34,16 @@ public class BoardService {
         return BoardInfoResponse.of(board);
     }
 
+    @Transactional
+    public void addBoardLike(Long boardId, Long memberId) {
+        Board board = BoardServiceUtils.findBoardById(boardRepository, boardId);
+        board.addLike(memberId);
+    }
+
+    @Transactional
+    public void cancelBoardLike(Long boardId, Long memberId) {
+        Board board = BoardServiceUtils.findBoardById(boardRepository, boardId);
+        board.cancelLike(memberId);
+    }
+
 }
