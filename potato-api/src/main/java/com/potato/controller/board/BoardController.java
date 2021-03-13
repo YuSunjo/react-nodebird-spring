@@ -5,6 +5,7 @@ import com.potato.config.session.MemberSession;
 import com.potato.controller.ApiResponse;
 import com.potato.service.board.BoardService;
 import com.potato.service.board.dto.request.CreateBoardRequest;
+import com.potato.service.board.dto.request.RetrieveLatestBoardListReqeust;
 import com.potato.service.board.dto.request.UpdateBoardRequest;
 import com.potato.service.board.dto.response.BoardInfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -48,6 +50,14 @@ public class BoardController {
     public ApiResponse<String> cancelBoardLike(@PathVariable Long boardId, @LoginMember MemberSession memberSession) {
         boardService.cancelBoardLike(boardId, memberSession.getMemberId());
         return ApiResponse.OK;
+    }
+
+    @Operation(summary = "그룹 리스트를 스크롤 방식으로 조회하는 API",
+        description = "lastBoardId= 가장 마지막에 보여지는 게시물의 id, size = 몇개를 받아 올 것인가")
+    @GetMapping("/board/list")
+    public ApiResponse<List<BoardInfoResponse>> retrieveLatestBoardList(@Valid RetrieveLatestBoardListReqeust request) {
+        return ApiResponse.of(boardService.retrieveLatestBoardList(request.getLastBoardId(), request.getSize()));
+
     }
 
 }

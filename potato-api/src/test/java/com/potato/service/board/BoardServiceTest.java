@@ -15,10 +15,13 @@ import com.potato.service.board.dto.response.BoardInfoResponse;
 import com.potato.service.member.MemberService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -152,6 +155,112 @@ public class BoardServiceTest extends MemberSetupTest {
         assertThatThrownBy(
             () -> boardService.cancelBoardLike(board.getId(), memberId)
         ).isInstanceOf(NotFoundException.class);
+    }
+
+    @Test
+    void 가장_최신의_게시물_3개를_불러온다() {
+        //given
+        Board board1 = BoardCreator.create("content1", memberId);
+        Board board2 = BoardCreator.create("content2", memberId);
+        Board board3 = BoardCreator.create("content3", memberId);
+
+        boardRepository.saveAll(Arrays.asList(board1, board2, board3));
+
+        //when
+        List<BoardInfoResponse> responses = boardService.retrieveLatestBoardList(0, 3);
+
+        //then
+        assertThat(responses).hasSize(3);
+        assertThat(responses.get(0).getContent()).isEqualTo("content3");
+    }
+
+    @Test
+    void 가장_최시니의_게시물_3개를_불러올때_게시글이_없을_경우_빈리스트_반환() {
+        //given
+        List<BoardInfoResponse> responses = boardService.retrieveLatestBoardList(0, 3);
+
+        //then
+        assertThat(responses).isEmpty();
+    }
+
+    @DisplayName("게시물 4 이후로부터 3개를 조회했으니 [3, 2, 1]가 조회되어야 한다.")
+    @Test
+    void 게시물_스크롤_페이지네이션_조회_기능_1() {
+        //given
+        Board board1 = BoardCreator.create("content1", memberId);
+        Board board2 = BoardCreator.create("content2", memberId);
+        Board board3 = BoardCreator.create("content3", memberId);
+        Board board4 = BoardCreator.create("content4", memberId);
+        Board board5 = BoardCreator.create("content5", memberId);
+
+        boardRepository.saveAll(Arrays.asList(board1, board2, board3, board4, board5));
+
+        //when
+        List<BoardInfoResponse> responses = boardService.retrieveLatestBoardList(board4.getId(), 3);
+
+        //then
+        assertThat(responses.size()).isEqualTo(3);
+        assertThat(responses.get(0).getContent()).isEqualTo(board3.getContent());
+        assertThat(responses.get(1).getContent()).isEqualTo(board2.getContent());
+        assertThat(responses.get(2).getContent()).isEqualTo(board1.getContent());
+    }
+
+    @DisplayName("게시물 5 이후로부터 3개를 조회했으니 [4, 3, 2]가 조회되어야 한다.")
+    @Test
+    void 게시물_스크롤_페이지네이션_조회_기능_2() {
+        //given
+        Board board1 = BoardCreator.create("content1", memberId);
+        Board board2 = BoardCreator.create("content2", memberId);
+        Board board3 = BoardCreator.create("content3", memberId);
+        Board board4 = BoardCreator.create("content4", memberId);
+        Board board5 = BoardCreator.create("content5", memberId);
+
+        boardRepository.saveAll(Arrays.asList(board1, board2, board3, board4, board5));
+
+        //when
+        List<BoardInfoResponse> responses = boardService.retrieveLatestBoardList(board5.getId(), 3);
+
+        //then
+        assertThat(responses.size()).isEqualTo(3);
+        assertThat(responses.get(0).getContent()).isEqualTo(board4.getContent());
+        assertThat(responses.get(1).getContent()).isEqualTo(board3.getContent());
+        assertThat(responses.get(2).getContent()).isEqualTo(board2.getContent());
+    }
+
+    @DisplayName("게시물 5 이후로부터 2개를 조회했으니 [4, 3]가 조회되어야 한다.")
+    @Test
+    void 게시물_스크롤_페이지네이션_조회_기능_3() {
+        //given
+        Board board1 = BoardCreator.create("content1", memberId);
+        Board board2 = BoardCreator.create("content2", memberId);
+        Board board3 = BoardCreator.create("content3", memberId);
+        Board board4 = BoardCreator.create("content4", memberId);
+        Board board5 = BoardCreator.create("content5", memberId);
+
+        boardRepository.saveAll(Arrays.asList(board1, board2, board3, board4, board5));
+
+        //when
+        List<BoardInfoResponse> responses = boardService.retrieveLatestBoardList(board5.getId(), 2);
+
+        //then
+        assertThat(responses.size()).isEqualTo(2);
+        assertThat(responses.get(0).getContent()).isEqualTo(board4.getContent());
+        assertThat(responses.get(1).getContent()).isEqualTo(board3.getContent());
+    }
+
+    @Test
+    void 게시물_스크롤_페이지네이션_조회_기능이_더이상_게시물이_존재하지_않을경우() {
+        //given
+        Board board = BoardCreator.create("content1", memberId);
+
+        boardRepository.save(board);
+//        boardRepository.saveAll(Collections.singleton(board));
+
+        //when
+        List<BoardInfoResponse> responses = boardService.retrieveLatestBoardList(board.getId(), 3);
+
+        //then
+        assertThat(responses).isEmpty();
     }
 
 }
